@@ -213,6 +213,41 @@ Once all services are running, access the following URLs:
   "temperature": 0.5
 }
 ```
+
+### Step 7: Test Your API
+
+Once your API is published, you can test it using the **Apinto Gateway** endpoint.
+
+**Example API Call:**
+
+```bash
+POST http://192.168.1.105:18099/bc69bbc2/translate-to-french
+```
+
+**⚠️ Important:** Use `192.168.1.105:18099` (Apinto Gateway endpoint) to make API calls, not the admin UI port.
+
+**Request Headers:**
+```
+Authorization: <your-api-key>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "variables": {
+    "user-query": "Hi, I want to confirm my shipping address for Order #45213. It should be John Doe, 221B Baker Street, London, NW1 6XE, Phone: +44 7123 456789."
+  },
+  "stream": false  
+}
+```
+
+**Postman Setup:**
+1. **Method:** POST
+2. **URL:** `http://192.168.1.105:18099/bc69bbc2/translate-to-french`
+3. **Authorization:** Type = API Key
+4. **Body:** Raw → JSON → Paste the request body above
+
 ---
 
 ## Important Notes
@@ -286,3 +321,4 @@ The backend is implemented in GoLang. Modifying source code requires Go knowledg
 
 **Last Updated:** 2025-10-10  
 **APIPark Version:** v1.9.0-beta
+
