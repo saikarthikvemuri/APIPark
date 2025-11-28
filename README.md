@@ -1,270 +1,324 @@
-![image](https://github.com/user-attachments/assets/96e36db5-2733-49c8-8e1e-ecbcc60a3943)
+# APIPark Local Setup Guide
 
-<p align="center">
-  <a href="/README.md">English</a>
-  | 
-  <a href="/readme/readme-jp.md">日本語</a>
-  | 
-  <a href="/readme/readme-zh-cn.md">简体中文</a>
-  | 
-  <a href="/readme/readme-zh-tw.md">繁體中文</a>
-</p>
+Complete guide for setting up APIPark on your local machine using Docker.
 
-<b>🦄 APIPark is an open-source, all-in-one AI gateway and API developer portal, helping developers and enterprises easily manage, integrate, and deploy AI services. APIPark is open-sourced under the Apache 2.0 license, which means it's free for commercial use!</b>
+---
 
-<br>
+## Table of Contents
 
-✨ With APIPark, you can:
-1. Quickly connect to 100+ AI models, supporting all mainstream AI Companies!
-2. Combine AI models and prompt templates into APIs, such as creating a sentiment analysis API, translation API, or data analysis API based on OpenAI GPT-4 and some custom prompts.
-3. Standardize the data format of all AI API requests, so switching AI models or modifying prompts won’t affect your APP or microservices, simplifying your AI usage and maintenance costs.
-4. Share APIs within the team through APIPark's developer portal.
-5. Manage calling applications and API keys to ensure your API's security and stability.
-6. Monitor your AI API usage with clear charts.
-7. Quickly export API request logs to third-party logging platforms.
+1. [Prerequisites](#prerequisites)
+2. [Initial Setup](#initial-setup)
+3. [Configuration](#configuration)
+4. [Starting APIPark](#starting-apipark)
+5. [Access URLs & Credentials](#access-urls--credentials)
+6. [Post-Installation Configuration](#post-installation-configuration)
+7. [Important Notes](#important-notes)
+8. [Known Limitations](#known-limitations)
 
-<br>
+---
 
-✨ APIPark is also a powerful cloud-native API gateway:
-1. It outperforms Nginx with higher performance, supports cluster deployment, and handles large-scale traffic.
-2. Share REST APIs within the team, manage API call relationships, and prevent management costs and data breaches caused by chaotic API calls.
+## Prerequisites
 
+### Required Software
 
-<br>
+- **Docker Desktop** (or Docker Engine + Docker Compose)
+  - Download: https://www.docker.com/products/docker-desktop
+  - Verify installation:
+    ```bash
+    docker --version
+    docker compose version
+    ```
 
-# 💌 Why Did We Build APIPark?
-Before building APIPark, we spent seven years developing an API development and automated testing platform with over 1 million developer users, 500+ enterprise customers, and multi-million-dollar investment from Sequoia Capital.
+### System Requirements
 
-As AI and Agents evolved, we noticed many enterprises wanted to integrate AI into both internal and third-party APIs, enabling AI agents to perform more complex tasks beyond being just knowledge-based Q&A bots. Hence, we built APIPark—your all-in-one AI gateway and API developer portal to accelerate your AI API development and quickly build your product or AI agent!
+- **OS**: macOS
+- **RAM**: Minimum 4GB available
+- **Disk**: Minimum 10GB free space
+- **Network**: Internet connection for pulling Docker images
 
-<br>
+---
 
-# ✨ Quick Start
-APIPark is designed to solve the following problems:
-- Seamlessly connect to various AI models and package these AI capabilities into APIs for easy calling, significantly reducing the barrier to using AI models.
-- Manage complex AI & API call relationships.
-- Manage API creation, monitoring, and security.
-- Fault detection and troubleshooting: Simplifying system issue identification and resolution.
-- Quantify data asset value: Enhance the visibility and valuation of data assets.
+## Initial Setup
 
-<br>
+### Step 1: Get Your Local IP Address
 
-😍 Deploying APIPark is incredibly simple. With just one command line, you can deploy your AI gateway and API developer portal in under 5 minutes.
+**CRITICAL:** APIPark requires your **actual host IP address**, not `localhost` or `127.0.0.1`.
 
-```
-curl -sSO  https://download.apipark.com/install/quick-start.sh ;  bash quick-start.sh
+**On macOS:**
+
+```bash
+ifconfig | grep "inet " | grep -v 127.0.0.1
 ```
 
-<br>
+**Example Output:**
+```
+inet 192.168.1.109 netmask 0xffffff00 broadcast 192.168.1.255
+```
 
-# 🔥 Features
-<table>
-  <tr>
-    <th>
-      Connect to 100+ AI models
-    </th>
-    <th>
-      Unified API to use all AI
-    </th>
+**Your IP:** `192.168.1.109` (use this in the next step)
 
-  </tr>
+**⚠️ IMPORTANT:** 
+- Do NOT use `localhost` or `127.0.0.1`
+- Use the actual IP address from your local network (e.g., `192.168.x.x` or `10.0.x.x`)
+- This IP will be used in `config.yml`
 
-  <tr>
-    <td width="50%">
-        <img src="https://apipark.com/wp-content/uploads/2024/10/AI-Gateway.png" />
-    </td>
-    <td width="50%">
-        <img src="https://apipark.com/wp-content/uploads/2024/10/Unified-API.png" />
-    </td>
-  </tr>
+---
 
-  <tr>
-    <th>
-      Transform AI & Prompt to REST API
-    </th>
-    <th>
-      API Developer Portal
-    </th>
+## Configuration
 
-  </tr>
+### Step 2: Update config.yml
 
-  <tr>
-    <td width="50%">
-        <img src="https://apipark.com/wp-content/uploads/2024/10/Prompt-template.png" />
-    </td>
-    <td width="50%">
-        <img src="https://apipark.com/wp-content/uploads/2024/10/developer-portal.png" />
-    </td>
-  </tr>
+Navigate to the project directory and edit the configuration file:
 
-  <tr>
-    <th>
-      High Performance
-    </th>
-    <th>
-      Manage API lifecycle
-    </th>
+```bash
+cd /path/to/APIPark
+nano scripts/config.yml
+```
 
-  </tr>
+**Replace `<IP>` placeholders with your actual IP address:**
 
-  <tr>
-    <td width="50%">
-        <img src="https://apipark.com/wp-content/uploads/2024/10/hyper-performance.png" />
-    </td>
-    <td width="50%">
-        <img src="https://apipark.com/wp-content/uploads/2024/08/Life-Cycle.png" />
-    </td>
-  </tr>
-  
-  <tr>
-    <th>
-      Review subscription before allowing API requests
-    </th>
-    <th>
-      Manage subscriber
-    </th>
-  </tr>
+```yaml
+version: 2
+client:
+  advertise_urls:
+    - http://192.168.1.109:19400  # ← Replace with YOUR IP
+  listen_urls:
+    - http://0.0.0.0:9400
 
-  <tr>
-    <td width="50%">
-            <img src="https://apipark.com/wp-content/uploads/2024/08/Application.png" />
-    </td>
-    <td width="50%">
-        <img src="https://apipark.com/wp-content/uploads/2024/08/Multi-tenant.png" />
-    </td>
-  </tr>
+gateway:
+  advertise_urls:
+    - http://192.168.1.109:18099  # ← Replace with YOUR IP
+    - https://192.168.1.109:18099 # ← Replace with YOUR IP
+  listen_urls:
+    - https://0.0.0.0:8099
+    - http://0.0.0.0:8099
 
-  <tr>
-    <th>
-      Logging
-    </th>
-    <th>
-      Analysis
-    </th>
-  </tr>
+peer:
+  listen_urls:
+    - http://0.0.0.0:9401
+  advertise_urls:
+    - http://192.168.1.109:19401  # ← Replace with YOUR IP
+```
 
-  <tr>
-    <td width="50%">
-        <img src="https://apipark.com/wp-content/uploads/2024/08/Chart-1.png" />
-    </td>
-    <td width="50%">
-            <img src="https://apipark.com/wp-content/uploads/2024/08/Chart.png" />
-    </td>
-  </tr>
-  
-</table>
+**What to Replace:**
+- Line 6: `http://192.168.1.105:19400` → `http://YOUR_IP:19400`
+- Line 14: `http://192.168.1.105:18099` → `http://YOUR_IP:18099`
+- Line 15: `https://192.168.1.105:18099` → `https://YOUR_IP:18099`
+- Line 23: `http://192.168.1.105:19401` → `http://YOUR_IP:19401`
 
-<br>
+**Save the file** (Ctrl+O, Enter, Ctrl+X in nano)
 
-<br>
+---
 
+## Starting APIPark
 
+### Step 3: Start All Services
 
-# 🚀 Use Cases
-## Simplify AI Integration Costs
-  - Connect to 100+ major models from all mainstream AI vendors, with standardized API calls requiring no additional adaptation work.
-  - Combine AI models and prompt templates to create new AI APIs, simplifying AI API development.
-  - Quickly share AI APIs within the team.
+From the project root directory:
 
-## Enhance Operational Efficiency
-  - Quickly build an internal API developer portal.
-  - Efficiently manage and call APIs.
-  - Reduce complex system call relationships.
+```bash
+docker compose -f scripts/docker-compose.yml up -d
+```
 
-## Ensure Compliance and Security
-  - Powerful service governance and compliance management features.
-  - Granular permission management for application calls.
-  - Ensure API call security and compliance, reducing enterprise risk.
+**Expected Output:**
+```
+[+] Running 9/9
+ ✔ Network apipark                Created
+ ✔ Container apipark-mysql        Started
+ ✔ Container apipark-redis        Started
+ ✔ Container apipark-influxdb     Started
+ ✔ Container apipark-loki         Started
+ ✔ Container apipark-nsq          Started
+ ✔ Container apipark-grafana      Started
+ ✔ Container apipark              Started
+ ✔ Container apipark-apinto       Started
+```
 
-## Simplify System Troubleshooting
-  - Use monitoring and diagnostic tools to quickly identify and resolve issues.
-  - Reduce downtime and improve system stability.
+### Step 4: Verify Services Are Running
 
-## Multi-Tenant Management and Flexible Subscription
-  - Supports multi-tenant management to meet different business unit needs.
-  - Flexible subscription and approval processes simplify API usage and management.
+```bash
+docker compose -f scripts/docker-compose.yml ps
+```
 
-## Improve API Observability
-  - Real-time monitoring and tracking of API usage.
-  - Fully understand data flow to enhance data usage transparency.
+**All services should show status: `Up`**
+---
 
-<br>
+## Access URLs & Credentials
 
-# 🚩 Roadmap
-We’ve set exciting goals for APIPark: enabling everyone to quickly create their own products and AI agents using AI and APIs!
+### Access URLs
 
-To achieve this goal, we plan to add new features to APIPark, including:
-1. Integrating with API marketplaces such as Postman, RapidAPI, APISpace, APILayer, etc. You can directly use APIs from various API marketplaces through APIPark and make them smarter using AI.
-2. Integrating AI Agents such as Langchain, AgentGPT, Auto-GPT, Dify, and more, allowing AI Agents to access your internal or third-party APIs through APIPark to complete more complex tasks.
-3. Intelligent API orchestration: APIPark will provide a unified API entry point and automatically orchestrate multiple APIs to fulfill your requests based on the API content.
+Once all services are running, access the following URLs:
 
-<br>
+| Service | URL | Purpose |
+|---------|-----|---------|
+| **APIPark UI** | http://localhost:18288 | Main admin interface for managing APIs, services, teams |
+| **Apinto Gateway** | http://localhost:18099 | API Gateway - where your published APIs are accessible |
+| **Cluster Address** | http://localhost:19400 | Admin/Cluster API for automation and system management |
+| **Grafana** | http://localhost:3000 | Log visualization and monitoring dashboards |
+| **InfluxDB** | http://localhost:8086 | Time-series database for metrics storage |
 
-# 📕 Documentation
-Visit [APIPark Documentation](https://docs.apipark.com/docs/deploy) for detailed installation guides, API references, and usage instructions.
+### Default Credentials
 
+| Service | Username | Password | Additional Info |
+|---------|----------|----------|-----------------|
+| **APIPark Admin** | admin | `12345678` | |
+| **MySQL** | root | `123456` | |
+| **Redis** | N/A | `123456` | |
+| **InfluxDB** | admin | `Key123qaz` | Token: `apipark-influxdb-token-2024` |
+| **Grafana** | N/A | N/A | |
 
-# 🧑‍🤝‍🧑Friendly Links
-<a href="https://xroute.ai/">
-  <img width="1248" height="158" alt="新建 PPTX 演示文稿 (2)_03" src="https://github.com/user-attachments/assets/0ebd694c-410a-4e3f-a793-90f1140d15df" />
+---
 
-</a>
-<br>
+## Post-Installation Configuration
 
-<br>
+### Step 5: Update Gateway IP in Admin Panel
 
-# 🧾 License
-APIPark uses the Apache 2.0 License. For more details, please refer to the LICENSE file.
+**CRITICAL STEP:** After starting APIPark, you must configure the gateway IP in the admin panel.
 
+1. **Login to APIPark UI:**
+   - Go to http://localhost:18288
+   - Login with `admin` / `12345678`
 
-<br>
+2. **Navigate to Cluster Settings:**
+   ```
+   System Settings → API Gateway → Edit Settings → Cluster Address
+   ```
 
-# 💌 Contact Us
-For enterprise-level features and professional technical support, contact our pre-sales experts for personalized demos, customized solutions, and pricing.
+3. **Update Gateway Address:**
+   - **Cluster Address:** `http://YOUR_IP:19400` (e.g., `http://192.168.1.109:19400`)
+   - Click **Save**
 
-- Website: https://apipark.com
-- Email: contact@apipark.com
+### Step 6: Configure AI Model Settings (If Using AI APIs)
 
-🙏 A big thanks to everyone who helped shape APIPark. We are thrilled to hear the community’s thoughts! Let’s make the world of APIs and AI stronger and more fun together. 🎉
+**IMPORTANT:** When configuring AI models, you must **remove the `json_schema` key** from the model configuration.
 
+**Correct Configuration Example:**
 
-<br>
+```json
+{
+  "frequency_penalty": null,
+  "max_tokens": 512,
+  "presence_penalty": null,
+  "response_format": null,
+  "temperature": 0.5,
+  "top_p": null
+}
+```
 
-# 🤝 Partner
-- [Cursor](https://www.cursor.com/): Cursor is an AI-powered code editor that integrates artificial intelligence directly into the coding workflow, offering features like intelligent next edit suggestions, deep codebase understanding for relevant answers, and natural language editing to streamline development tasks and boost developer productivity.
+**❌ INCORRECT (will cause errors):**
+```json
+{
+  "json_schema": {...},  ← Remove this
+  "max_tokens": 512,
+  "temperature": 0.5
+}
+```
 
-- [Dify](https://dify.ai/): Dify is a leading Agentic AI Development Platform that provides a comprehensive suite of tools for building and extending AI applications, offering everything needed for agentic workflows, RAG pipelines, integrations, and observability, while allowing users to amplify their applications with various global Large Language Models (LLMs) and versatile plugins.
+### Step 7: Test Your API
 
-- [Trae](https://www.trae.ai/): Trae is an AI-native Integrated Development Environment (IDE) product that aims to embody the concept of “The Real AI Engineer” through intelligent productivity, seamlessly integrating into the development process to enhance quality and efficiency, featuring a chat-based interaction interface and supporting code generation and assistance.
+Once your API is published, you can test it using the **Apinto Gateway** endpoint.
 
-- [Windsurf](https://windsurf.com/): Windsurf is an AI code editor designed to provide a seamless and limitless flow for developers, introducing a new purpose-built IDE that leverages AI to enhance coding with features like "Cascade" for deep codebase understanding, "Windsurf Tab" for intelligent autocompletion, and "Memories" for remembering important aspects of the codebase.
+**Example API Call:**
 
-- [Coze](https://www.coze.com/): Coze is a next-generation AI application and chatbot development platform by ByteDance, empowering users to easily create and deploy powerful AI chatbots across various platforms with a no-code bot builder, integrated workflow logic, access to proprietary data, and simplified creation through pre-built plugins, knowledge bases, and workflows.
+```bash
+POST http://192.168.1.105:18099/bc69bbc2/translate-to-french
+```
 
-- [Claude Code](https://www.anthropic.com/claude-code): Claude Code is a command-line AI tool by Anthropic that embeds the Claude Opus 4 model directly into the user’s terminal, providing deep codebase awareness, the ability to edit files and execute commands, and making coordinated changes across multiple files, all while integrating seamlessly with popular IDEs and leveraging existing test suites.
+**⚠️ Important:** Use `192.168.1.105:18099` (Apinto Gateway endpoint) to make API calls, not the admin UI port.
 
-- [Flowith](https://flowith.io/): Flowith is an AI creation workspace designed to revolutionize productivity and deep work by transforming knowledge and streamlining tasks through a multi-thread interface powered by advanced AI agents, offering an intuitive canvas-based user experience unlike traditional chat-based AI tools, and including a 24/7 operational version for complex tasks.
+**Request Headers:**
+```
+Authorization: <your-api-key>
+Content-Type: application/json
+```
 
-- [OpenManus](https://github.com/FoundationAgents/OpenManus): OpenManus is an open-source framework dedicated to building general AI agents, aiming to provide a platform where users can create and deploy their own agents without an invite code, supporting multi-agent capabilities, and requiring configuration for Large Language Model (LLM) APIs while integrating with browser automation tools.
+**Request Body:**
+```json
+{
+  "variables": {
+    "user-query": "Hi, I want to confirm my shipping address for Order #45213. It should be John Doe, 221B Baker Street, London, NW1 6XE, Phone: +44 7123 456789."
+  },
+  "stream": false  
+}
+```
 
-- [Fellou](https://fellou.ai/): Fellou is an innovative Agentic Browser designed to transcend traditional web browsing by actively performing actions on behalf of the user, automating the entire process of information gathering and insight delivery, and excelling in in-depth research with seamless integrations with popular tools like Notion and LinkedIn.
+**Postman Setup:**
+1. **Method:** POST
+2. **URL:** `http://192.168.1.105:18099/bc69bbc2/translate-to-french`
+3. **Authorization:** Type = API Key
+4. **Body:** Raw → JSON → Paste the request body above
 
-- [Genspark](https://www.genspark.ai/): Genspark is an ultimate all-in-one AI companion offering a comprehensive suite of tools like AI Slides, AI Sheets, and AI Chat, designed to enhance various aspects of productivity and content creation, with personalized tools and AI Pods for generating content from diverse sources.
+---
 
-- [TEN](https://github.com/TEN-framework/ten-framework): TEN (The Embodied Narrator) is an open-source framework for building real-time, multimodal conversational voice AI agents, including components like TEN Framework, TEN Turn Detection, TEN Agent, TMAN Designer, and TEN Portal, offering features like Real-time Avatar, seamless MCP integration, real-time hardware communication, and vision/screenshare detection.
+## Important Notes
 
-- [ChatGPT](https://chatgpt.com/): ChatGPT is an AI chatbot developed by OpenAI, built upon large language models like GPT-3.5 and GPT-4, designed to generate human-like conversational dialogue, understand context, answer follow-up questions, and integrate with various platforms for enhanced productivity through advanced language understanding, generation, and multilingual capabilities.
+### IP Address Changes
 
-- [LangChain](https://www.langchain.com/): LangChain is a robust platform engineered for the development of reliable agents and Large Language Model (LLM) applications, offering a comprehensive product suite that seamlessly integrates various tools across the entire application development lifecycle, including LangGraph, LangSmith, and the LangGraph Platform, with functionalities for code generation, automation, and AI Search.
+**⚠️ CRITICAL:** If your local IP address changes (e.g., after reconnecting to WiFi, DHCP renewal), you MUST:
 
-- [LEMON AI](https://lemonai.cc/): Lemon AI is the first Full-stack, Open-source, Agentic AI framework, offering a fully local alternative to platforms like Manus & Genspark AI. It features an integrated Code Interpreter VM sandbox for safe execution.
+1. **Stop all containers:**
+   ```bash
+   docker compose -f scripts/docker-compose.yml down -v
+   ```
 
-- [LobeChat](https://lobehub.com/): LobeHub offers LobeChat, a personal LLM productivity tool designed to elevate the user experience beyond traditional chatbots by empowering individuals to build personal AI agents and professional teams, supporting a wide array of LLMs, offering a simple chat interface, visual recognition, voice interaction, a rich plugin ecosystem, and knowledge base functionalities.
+2. **Get new IP address:**
+   ```bash
+   ifconfig | grep "inet " | grep -v 127.0.0.1
+   ```
 
-- [VS Code](https://code.visualstudio.com/): Visual Studio Code (VS Code) is a widely popular, free, and open-source code editor by Microsoft, renowned for its extensibility and customization, supporting vast programming languages, and integrating AI capabilities like intelligent next edit suggestions and an advanced “agent mode” for complex tasks, with broad compatibility with various AI models.
+3. **Update `scripts/config.yml`:**
+   - Replace all occurrences of old IP with new IP
+   - Update lines 6, 14, 15, and 23
 
-- [XRoute](https://xroute.ai): The Unified Interface For LLMs, provides better prices, better throughput, and no subscription.
+4. **Restart containers:**
+   ```bash
+   docker compose -f scripts/docker-compose.yml up -d
+   ```
 
-- [XPack MCP Marketplace](https://github.com/xpack-ai/XPack-MCP-Marketplace): The world's first open-source MCP monetization platform, transform any OpenAPI into a monetizable MCP server and build your own API marketplace in just 10 minutes. Everything is open-source and ready for commercial use.
+5. **Update Gateway IP in Admin Panel:**
+   - Login to APIPark UI
+   - Go to System Settings → API Gateway → Edit Settings → Cluster Address
+   - Update Cluster Address with new IP
+   - Save changes
+---
 
-- [MemU](https://github.com/NevaMind-AI/memU): MemU is an open-source memory framework for AI companions
+## Known Limitations
+
+### 1. PII Handling
+**Issue:** Personally Identifiable Information (PII) is still sent to the LLM
+
+**Details:**
+- Data Masking feature works only at the **response level**, not request level
+- PII in requests is sent to AI providers (OpenAI, Claude, etc.) **unmasked**
+- Data Masking currently works only for **REST APIs**, not AI APIs
+
+**Impact:**
+- Cannot protect PII before it reaches LLMs
+- Compliance risk for sensitive data
+- Response masking has limited practical value
+
+**Workaround:**
+- Implement PII redaction before APIPark
+- Use external pre-processing layer
+- Avoid sending PII to AI APIs
+
+### 2. Intermittent Errors
+Occasional sudden timeouts may occur (e.g., `lookup api.openai.com: i/o timeout`), particularly when updating prompts or CMS items.
+
+### 3. Non-Streaming Responses
+Errors may occur when handling non-streaming responses from AI providers. Some AI APIs may fail when streaming is disabled, resulting in response parsing errors or incomplete responses.
+
+### 4. Feature Completeness
+The open-source repository is still under active development. Some features are incomplete, bugs exist, and documentation may be outdated. Pin to a specific version (currently using `v1.9.0-beta`) and test thoroughly before production use.
+
+### 5. Log Processing Delays
+The built-in logging system is not real-time due to its producer-queue-consumer architecture. Logs may appear minutes after API calls, making real-time debugging difficult.
+
+### 6. Backend Language
+The backend is implemented in GoLang. Modifying source code requires Go knowledge and compilation. This is not a limitation but just want to make a note of it.
+
+---
+
+**Last Updated:** 2025-10-10  
+**APIPark Version:** v1.9.0-beta
+

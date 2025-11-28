@@ -1,0 +1,26 @@
+version: 2
+#certificate: # Root directory for certificates
+#  dir: /etc/apinto/cert
+client:
+  advertise_urls: # Open API broadcast addresses
+    - http://192.168.3.9:19400
+  listen_urls: # Open API listening addresses
+    - http://0.0.0.0:9400
+  #certificate:  # Certificate configuration, allowing self-signed certificates using IP
+  #  - cert: server.pem
+  #    key: server.key
+gateway:
+  advertise_urls: # Forwarding service broadcast addresses
+    - http://192.168.3.9:18099
+    - https://192.168.3.9:18099
+  listen_urls: # Forwarding service listening addresses
+    - https://0.0.0.0:8099
+    - http://0.0.0.0:8099
+peer: # Cluster node communication configuration information
+  listen_urls: # Node listening addresses
+    - http://0.0.0.0:9401
+  advertise_urls: # Node communication broadcast addresses
+    - http://192.168.3.9:19401
+  #certificate:  # Certificate configuration, allowing self-signed certificates using IP
+  #  - cert: server.pem
+  #    key: server.key
